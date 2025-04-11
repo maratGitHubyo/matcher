@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: matcher
+      POSTGRES_PASSWORD: matcher
+      POSTGRES_DB: matcher
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
