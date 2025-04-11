@@ -10,9 +10,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update # или validate / none / create-drop
-    show-sql: true
+      ddl-auto: validate # или validate / none / create-drop
+    #    show-sql: true
     properties:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
