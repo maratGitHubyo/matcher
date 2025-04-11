@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.8'  # Для Docker Compose v2
 
 services:
   postgres:
-    image: postgres:14
+    image: postgres:latest
     environment:
       POSTGRES_USER: matcher
       POSTGRES_PASSWORD: matcher
@@ -10,7 +10,26 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - matcher_pgdata:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    command: server --console-address ":9001" /data/
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: matcher-minio
+      MINIO_ROOT_PASSWORD: matcher-minio
+      MINIO_BUCKETS: matcher-photo
+    volumes:
+      - minio-storage:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
 volumes:
-  pgdata:
+  matcher_pgdata:
+  minio-storage:
