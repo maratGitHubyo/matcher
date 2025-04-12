@@ -25,3 +25,14 @@ minio:
   access-key: matcher-minio
   secret-key: matcher-minio
   bucket-name: matcher-photo
+
+feign:
+  client:
+    config:
+      recognize-client:
+        url: http://localhost:5555
+
+logging:
+  level:
+    com.netflix.client: DEBUG  # Для отладки Feign клиента
+    feign: DEBUG               # Для отладки запросов и ответов Feign
