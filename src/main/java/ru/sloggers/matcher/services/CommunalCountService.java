@@ -30,6 +30,7 @@ public class CommunalCountService {
 
     /**
      * Метод проверяет полное соответствие адреса и номеров счетчика, если проверка пройдена, то ставит флаг recognize = true
+     * Адрес должен выглядеть так: city/street/houseNumber/0/apartmentNumber
      *
      * @param oldNumber номер старого счетчика
      * @param newNumber номер нового счетчика
