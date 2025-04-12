@@ -4,6 +4,7 @@ import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
 import io.minio.Result;
 import io.minio.errors.MinioException;
@@ -68,8 +69,7 @@ public class MinioService {
         }
     }
 
-    // Метод для загрузки файла в MinIO
-    public void uploadFile(String objectName, InputStream inputStream, String contentType) throws MinioException {
+    public ObjectWriteResponse uploadFile(String objectName, InputStream inputStream, String contentType) throws MinioException {
         try {
             PutObjectArgs objectArgs = PutObjectArgs.builder()
                     .bucket(bucketName)
@@ -77,7 +77,7 @@ public class MinioService {
                     .stream(inputStream, -1, 10485760)
                     .contentType(contentType)
                     .build();
-            minioClient.putObject(objectArgs);
+            return minioClient.putObject(objectArgs);
         } catch (Exception e) {
             throw new MinioException("Ошибка при загрузке файла в MinIO");
         }

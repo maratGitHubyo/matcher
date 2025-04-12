@@ -1,5 +1,6 @@
 package ru.sloggers.matcher.minio;
 
+import io.minio.ObjectWriteResponse;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -43,12 +44,12 @@ public class MinioController {
     }
 
     @PostMapping("upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws MinioException {
+    public ResponseEntity<ObjectWriteResponse> uploadFile(@RequestParam("file") MultipartFile file) throws MinioException {
         try {
-            minioService.uploadFile(file.getOriginalFilename(), file.getInputStream(), "image/jpeg");
-            return ResponseEntity.ok("File uploaded successfully!");
+            ObjectWriteResponse objectWriteResponse = minioService.uploadFile(file.getOriginalFilename(), file.getInputStream(), "image/jpeg");
+            return ResponseEntity.ok(objectWriteResponse);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error reading the file.");
+            return ResponseEntity.status(500).build();
         }
     }
 }
