@@ -10,7 +10,8 @@ CREATE TABLE communal_counter
     house_number     VARCHAR(255),
     apartment_number VARCHAR(255),
     old_type         VARCHAR(255),
-    new_type         VARCHAR(255)
+    new_type         VARCHAR(255),
+    recognized       BOOLEAN DEFAULT 'false'
 );
 
 -- Добавим уникальный индекс на старый и новый номер

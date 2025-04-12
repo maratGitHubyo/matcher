@@ -8,4 +8,7 @@ import ru.sloggers.matcher.entities.CommunalCounter;
 public interface CommunalCounterJpaRepository extends JpaRepository<CommunalCounter, Long> {
 
     Boolean existsByOldNumberAndNewNumber(String oldNumber, String newNumber);
+
+    CommunalCounter findByOldNumberAndNewNumber(String oldNumber, String newNumber);
+
 }
