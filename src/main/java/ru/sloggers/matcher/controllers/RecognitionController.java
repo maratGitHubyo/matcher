@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import ru.sloggers.matcher.dto.RecognitionRequest;
 import ru.sloggers.matcher.dto.RecognitionResponse;
-import ru.sloggers.matcher.services.RecognitionService;
+import ru.sloggers.matcher.integrations.RecognitionClient;
 
 import java.util.List;
 
@@ -19,11 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecognitionController {
 
-    private final RecognitionService recognitionService;
+    private final RecognitionClient recognitionClient;
 
     @PostMapping
-    public List<RecognitionResponse> recognize(@RequestParam("files") List<MultipartFile> files) {
-        return recognitionService.recognizePhotos(files);
+    public List<RecognitionResponse> recognize(@RequestParam("files") RecognitionRequest files) {
+        return recognitionClient.recognizePhotos(files).recognitions();
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

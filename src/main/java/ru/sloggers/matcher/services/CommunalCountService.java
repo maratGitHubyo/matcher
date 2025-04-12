@@ -39,24 +39,21 @@ public class CommunalCountService {
      */
     @Transactional
     public boolean checkIfExistSetRecognizeFlag(String oldNumber, String newNumber, String address) {
-        if (communalCounterJpaRepository.existsByOldNumberAndNewNumber(oldNumber, newNumber)) {
-            CommunalCounter communalCounter = communalCounterJpaRepository.findByOldNumberAndNewNumber(oldNumber, newNumber);
-            String[] addressArray = address.split("/");
-            if (isExactMatch(oldNumber, newNumber, communalCounter, addressArray)) {
-                communalCounter.setRecognized(true);
-                communalCounterJpaRepository.save(communalCounter);
-                return true;
-            } else {
-                throw new RuntimeException(("Распознанные данные не совпадают с данными реестра, address = '%s'," +
-                        " oldNumber = '%s' and newNumber = '%s'").formatted(address, oldNumber, newNumber));
-            }
+        CommunalCounter communalCounter = communalCounterJpaRepository.findByOldNumberAndNewNumber(oldNumber, newNumber)
+                .orElseThrow(() -> new RuntimeException("Communal counter with oldNumber = '%s' and newNumber = '%s' not found".formatted(oldNumber, newNumber)));
 
+        if (isExactMatch(oldNumber, newNumber, communalCounter, address)) {
+            communalCounter.setRecognized(true);
+            communalCounterJpaRepository.save(communalCounter);
+            return true;
         } else {
-            throw new RuntimeException("Communal counter with oldNumber = '%s' and newNumber = '%s' not found".formatted(oldNumber, newNumber));
+            throw new RuntimeException(("Распознанные данные не совпадают с данными реестра, address = '%s'," +
+                    " oldNumber = '%s' and newNumber = '%s'").formatted(address, oldNumber, newNumber));
         }
     }
 
-    private static boolean isExactMatch(String oldNumber, String newNumber, CommunalCounter communalCounter, String[] addressArray) {
+    private static boolean isExactMatch(String oldNumber, String newNumber, CommunalCounter communalCounter, String address) {
+        String[] addressArray = address.split("/");
         return communalCounter.getCity().toLowerCase().contains(addressArray[0].toLowerCase()) && communalCounter.getStreet().toLowerCase().contains(addressArray[1].toLowerCase()) &&
                 communalCounter.getHouseNumber().toLowerCase().contains(addressArray[2].toLowerCase()) && communalCounter.getApartmentNumber().toLowerCase().contains(addressArray[4].toLowerCase()) &&
                 communalCounter.getOldNumber().equals(oldNumber) && communalCounter.getNewNumber().equals(newNumber);

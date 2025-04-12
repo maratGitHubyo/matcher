@@ -8,7 +8,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ru.sloggers.matcher.entities.CommunalCounter;
 
 import java.io.IOException;
@@ -24,14 +23,14 @@ public class RegistryParser {
 
     public static final int CAP_END = 9;
 
-    public Integer parse(MultipartFile file) {
-        List<CommunalCounter> communalCounters = parseFile(file);
+    public Integer parse(InputStream inputStream) throws IOException {
+        List<CommunalCounter> communalCounters = parseFile(inputStream);
         communalCountService.saveAll(communalCounters);
         return communalCounters.size();
     }
 
     // Номера колонок согласно структуре файла (индексация с 0)
-    private List<CommunalCounter> parseFile(MultipartFile file) {
+    private List<CommunalCounter> parseFile(InputStream inputStream) throws IOException {
 
         int cityCellIndex = 3;
         int streetCellIndex = 4;
@@ -44,40 +43,36 @@ public class RegistryParser {
 
         List<CommunalCounter> countries = new ArrayList<>();
 
-        try (InputStream inputStream = file.getInputStream();
-             Workbook workbook = new XSSFWorkbook(inputStream)) {
+        Workbook workbook = new XSSFWorkbook(inputStream);
 
-            Sheet sheet = workbook.getSheetAt(0); // Первый лист
-            for (Row row : sheet) {
-                CommunalCounter.CommunalCounterBuilder communalCounterBuilder = CommunalCounter.builder();
-                if (row.getRowNum() < CAP_END) {
-                    continue;
-                }
-                for (Cell cell : row) {
-                    if (cell.getColumnIndex() == cityCellIndex) {
-                        communalCounterBuilder.city(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == streetCellIndex) {
-                        communalCounterBuilder.street(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == houseCellIndex) {
-                        communalCounterBuilder.houseNumber(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == apartmentCellIndex) {
-                        communalCounterBuilder.apartmentNumber(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == oldTypeCellIndex) {
-                        communalCounterBuilder.oldType(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == oldNumberCellIndex) {
-                        communalCounterBuilder.oldNumber(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == newTypeCellIndex) {
-                        communalCounterBuilder.newType(getStringCellValue(cell));
-                    } else if (cell.getColumnIndex() == newNumberCellIndex) {
-                        communalCounterBuilder.newNumber(getStringCellValue(cell));
-                    }
-                }
-
-                CommunalCounter communalCounter = communalCounterBuilder.build();
-                countries.add(communalCounter);
+        Sheet sheet = workbook.getSheetAt(0); // Первый лист
+        for (Row row : sheet) {
+            CommunalCounter.CommunalCounterBuilder communalCounterBuilder = CommunalCounter.builder();
+            if (row.getRowNum() < CAP_END) {
+                continue;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            for (Cell cell : row) {
+                if (cell.getColumnIndex() == cityCellIndex) {
+                    communalCounterBuilder.city(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == streetCellIndex) {
+                    communalCounterBuilder.street(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == houseCellIndex) {
+                    communalCounterBuilder.houseNumber(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == apartmentCellIndex) {
+                    communalCounterBuilder.apartmentNumber(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == oldTypeCellIndex) {
+                    communalCounterBuilder.oldType(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == oldNumberCellIndex) {
+                    communalCounterBuilder.oldNumber(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == newTypeCellIndex) {
+                    communalCounterBuilder.newType(getStringCellValue(cell));
+                } else if (cell.getColumnIndex() == newNumberCellIndex) {
+                    communalCounterBuilder.newNumber(getStringCellValue(cell));
+                }
+            }
+
+            CommunalCounter communalCounter = communalCounterBuilder.build();
+            countries.add(communalCounter);
         }
 
         return countries;
@@ -86,7 +81,7 @@ public class RegistryParser {
     @SuppressWarnings("deprecation")
     public static String getStringCellValue(Cell cell) {
         cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue();
+        return cell.getStringCellValue().trim();
     }
 }
 

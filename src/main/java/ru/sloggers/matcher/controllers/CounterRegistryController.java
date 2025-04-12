@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.sloggers.matcher.services.RegistryParser;
 
+import java.io.IOException;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -18,8 +20,8 @@ public class CounterRegistryController {
     private final RegistryParser registryParser;
 
     @PostMapping
-    public Integer registryParse(@RequestParam MultipartFile file) {
-        return registryParser.parse(file);
+    public Integer registryParse(@RequestParam MultipartFile file) throws IOException {
+        return registryParser.parse(file.getInputStream());
     }
 
 }

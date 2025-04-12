@@ -9,6 +9,8 @@ import ru.sloggers.matcher.entities.CommunalCounter;
 import ru.sloggers.matcher.repositories.CommunalCounterJpaRepository;
 import ru.sloggers.matcher.repositories.CommunalCounterRepository;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,8 +47,7 @@ class CommunalCountServiceTest {
                 .build();
 
         //mock
-        when(communalCounterJpaRepository.existsByOldNumberAndNewNumber(oldNumber, newNumber)).thenReturn(Boolean.TRUE);
-        when(communalCounterJpaRepository.findByOldNumberAndNewNumber(oldNumber, newNumber)).thenReturn(communalCounter);
+        when(communalCounterJpaRepository.findByOldNumberAndNewNumber(oldNumber, newNumber)).thenReturn(Optional.of(communalCounter));
         communalCounter.setRecognized(true);
         when(communalCounterJpaRepository.save(communalCounter)).thenReturn(communalCounter);
 
