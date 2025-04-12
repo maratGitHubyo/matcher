@@ -13,4 +13,6 @@ public interface CommunalCounterJpaRepository extends JpaRepository<CommunalCoun
 
     Optional<CommunalCounter> findByOldNumberAndNewNumber(String oldNumber, String newNumber);
 
+    Boolean existsByOldNumberAndNewNumberAndRecognized(String oldNumber, String newNumber, Boolean recognized);
+
 }

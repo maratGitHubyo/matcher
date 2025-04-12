@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.sloggers.matcher.services.RegistryParser;
+import ru.sloggers.matcher.services.ExcelService;
 
 import java.io.IOException;
 
@@ -17,11 +17,11 @@ import java.io.IOException;
 @RequestMapping("registry")
 public class CounterRegistryController {
 
-    private final RegistryParser registryParser;
+    private final ExcelService excelService;
 
     @PostMapping
     public Integer registryParse(@RequestParam MultipartFile file) throws IOException {
-        return registryParser.parse(file.getInputStream());
+        return excelService.parseRegistryAndSaveCounters(file.getInputStream());
     }
 
 }

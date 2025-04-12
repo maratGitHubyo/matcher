@@ -28,6 +28,11 @@ public class CommunalCountService {
         return communalCounterJpaRepository.existsByOldNumberAndNewNumber(oldNumber, newNumber);
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsByOldNumberAndNewNumberAndRecognized(String oldNumber, String newNumber) {
+        return communalCounterJpaRepository.existsByOldNumberAndNewNumberAndRecognized(oldNumber, newNumber, true);
+    }
+
     /**
      * Метод проверяет полное соответствие адреса и номеров счетчика, если проверка пройдена, то ставит флаг recognize = true
      * Адрес должен выглядеть так: city/street/houseNumber/0/apartmentNumber
