@@ -1,6 +1,11 @@
 spring:
   application:
     name: matcher
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 
   datasource:
     url: jdbc:postgresql://localhost:5432/
@@ -31,3 +36,10 @@ feign:
     config:
       recognize-client:
         url: http://localhost:5555
+
+logging:
+  file:
+    path: log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true

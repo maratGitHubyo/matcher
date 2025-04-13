@@ -1,4 +1,4 @@
-package ru.sloggers.matcher.dto;
+package ru.sloggers.matcher.services.client.dto;
 
 import lombok.Builder;
 
