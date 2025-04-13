@@ -17,8 +17,8 @@ CREATE TABLE metering_device
 
     -- TODO : (временно) нормализовать БД и вынести поля ниже в табличку
     -- TODO : (временно) чистить нижние поля после формирования итогового отчета
-    renaiming_old_photos  VARCHAR,
-    renaiming_new_photos  VARCHAR,
+    renamed_old_photos   VARCHAR,
+    renamed_new_photos   VARCHAR,
     canonical_photo_path VARCHAR(255),
     is_recognized        BOOLEAN DEFAULT 'false'
 );

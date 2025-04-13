@@ -48,13 +48,13 @@ public class MeteringDevice {
      * Список имен/ссылок старых фотографий ПУ на момент обработки документа
      * Дефолтное значение empty
      */
-    private String renaimingOldPhotos;
+    private String renamedOldPhotos;
 
     /**
      * Список имен/ссылок новых фотографий ПУ на момент обработки документа
      * Дефолтное значение: empty
      */
-    private String renaimingNewPhotos;
+    private String renamedNewPhotos;
 
     /**
      * Путь к папке с необработанными фото
