@@ -1,4 +1,4 @@
-package ru.sloggers.matcher.minio;
+package ru.sloggers.matcher.services.minio;
 
 import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.sloggers.matcher.dto.ItemDto;
-import ru.sloggers.matcher.mappers.ItemMapper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+
+    private static final String CONTENT_TYPE = "image/jpeg";
 
     @Value("${minio.url}")
     private String minioUrl;
@@ -69,13 +69,13 @@ public class MinioService {
         }
     }
 
-    public ObjectWriteResponse uploadFile(String objectName, InputStream inputStream, String contentType) throws MinioException {
+    public ObjectWriteResponse uploadFile(String objectName, InputStream inputStream) throws MinioException {
         try {
             PutObjectArgs objectArgs = PutObjectArgs.builder()
                     .bucket(bucketName)
                     .object(objectName)
                     .stream(inputStream, -1, 10485760)
-                    .contentType(contentType)
+                    .contentType(CONTENT_TYPE)
                     .build();
             return minioClient.putObject(objectArgs);
         } catch (Exception e) {

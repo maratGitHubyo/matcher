@@ -1,19 +1,18 @@
-package ru.sloggers.matcher.mappers;
+package ru.sloggers.matcher.services.minio;
 
 
 import io.minio.messages.Item;
 import org.mapstruct.Mapper;
-import ru.sloggers.matcher.dto.ItemDto;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
 
     default ItemDto toDto(Item item) {
         return item == null ? null : ItemDto.builder()
-                .objectName(item.objectName())
+                /*.objectName(item.objectName())
                 .size(item.size())
                 .userTags(item.userTags())
-                .isDir(item.isDir())
+                .isDir(item.isDir())*/
                 .build();
     }
 }

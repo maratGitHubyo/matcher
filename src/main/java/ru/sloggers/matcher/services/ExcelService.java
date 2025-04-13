@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-import ru.sloggers.matcher.entities.CommunalCounter;
+import ru.sloggers.matcher.entities.MeteringDevice;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExcelService {
 
-    private final CommunalCountService communalCountService;
+    private final MeteringDeviceService meteringDeviceService;
 
     public static final int CITY_CELL_INDEX = 3;
     public static final int STREET_CELL_INDEX = 4;
@@ -37,22 +37,22 @@ public class ExcelService {
     public static final int CAP_END = 9;
 
     public Integer parseRegistryAndSaveCounters(InputStream inputStream) throws IOException {
-        List<CommunalCounter> communalCounters = parseRegistryFile(inputStream);
-        communalCountService.saveAll(communalCounters);
-        return communalCounters.size();
+        List<MeteringDevice> meteringDevices = parseRegistryFile(inputStream);
+        meteringDeviceService.saveAll(meteringDevices);
+        return meteringDevices.size();
     }
 
     // Номера колонок согласно структуре файла (индексация с 0)
-    private List<CommunalCounter> parseRegistryFile(InputStream inputStream) throws IOException {
+    private List<MeteringDevice> parseRegistryFile(InputStream inputStream) throws IOException {
 
 
-        List<CommunalCounter> countries = new ArrayList<>();
+        List<MeteringDevice> countries = new ArrayList<>();
 
         Workbook workbook = new XSSFWorkbook(inputStream);
 
         Sheet sheet = workbook.getSheetAt(0); // Первый лист
         for (Row row : sheet) {
-            CommunalCounter.CommunalCounterBuilder communalCounterBuilder = CommunalCounter.builder();
+            MeteringDevice.MeteringDeviceBuilder communalCounterBuilder = MeteringDevice.builder();
             if (row.getRowNum() < CAP_END) {
                 continue;
             }
@@ -76,8 +76,8 @@ public class ExcelService {
                 }
             }
 
-            CommunalCounter communalCounter = communalCounterBuilder.build();
-            countries.add(communalCounter);
+            MeteringDevice meteringDevice = communalCounterBuilder.build();
+            countries.add(meteringDevice);
         }
 
         inputStream.close();
@@ -102,7 +102,7 @@ public class ExcelService {
             Cell oldNumberCell = row.getCell(OLD_NUMBER_CELL_INDEX);
             Cell newNumberCell = row.getCell(NEW_NUMBER_CELL_INDEX);
 
-            boolean isRecognized = communalCountService.existsByOldNumberAndNewNumberAndRecognized(getStringCellValue(oldNumberCell), getStringCellValue(newNumberCell));
+            boolean isRecognized = meteringDeviceService.existsByOldNumberAndNewNumberAndRecognized(getStringCellValue(oldNumberCell), getStringCellValue(newNumberCell));
 
             CellStyle style = workbook.createCellStyle();
             style.setFillPattern(FillPatternType.SOLID_FOREGROUND);

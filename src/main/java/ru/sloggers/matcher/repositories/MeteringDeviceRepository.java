@@ -3,20 +3,20 @@ package ru.sloggers.matcher.repositories;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.sloggers.matcher.entities.CommunalCounter;
+import ru.sloggers.matcher.entities.MeteringDevice;
 
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CommunalCounterRepository {
+public class MeteringDeviceRepository {
 
     private final EntityManager entityManager;
 
-    public void insertAllIfNotExists(List<CommunalCounter> counters) {
-        for (CommunalCounter counter : counters) {
+    public void insertAllIfNotExists(List<MeteringDevice> counters) {
+        for (MeteringDevice counter : counters) {
             entityManager.createNativeQuery("""
-                                INSERT INTO communal_counter (
+                                INSERT INTO metering_device (
                                     old_number, new_number, city, street, house_number,
                                     apartment_number, old_type, new_type
                                 ) VALUES (:oldNumber, :newNumber, :city, :street, :houseNumber,
