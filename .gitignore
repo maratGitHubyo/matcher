@@ -21,3 +21,5 @@ target/
 
 ### Local ###
 src/main/resources/photos
+docker_volumes
+log

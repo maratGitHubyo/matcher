@@ -38,11 +38,11 @@ public class PhotoFolderScanner {
     private static final String REJECTION_PHOTO_ERROR_MSG = "Ошибка отбраковки CV, данные адреса не совпадают с номерами счетчиков, проверьте вручную";
 
     // TODO : сделать root не через абсолютный адрес
-    private static final String ROOT = "D:\\work-station\\projects\\IDEA\\matcher\\src\\main\\resources\\photosmock";
+    private static final String ROOT = "D:\\work-station\\projects\\IDEA\\matcher\\src\\main\\resources\\photos";
     private static final Integer PARTS_OF_ADDRESS = 5; // классический адрес по формализации состоит из пяти частей и находится в пути файла
     private static final String WATER_METER_OLD_PHOTOS = "Фото старого ПУ"; // формализованное название папки для хранения фото old, находится по пути полного адреса
     private static final String WATER_METER_NEW_PHOTOS = "Фото нового ПУ"; // формализованное название папки для хранения фото new, находится по пути полного адреса
-    private static final String BINDING_FOLDER = "photosmock";
+    private static final String BINDING_FOLDER = "photos";
     // TODO : только ли jpeg?
     private static final String JPG = ".jpg";
     private static final String JPEG = ".jpeg";
@@ -107,13 +107,13 @@ public class PhotoFolderScanner {
                 if (!oldPhotos.isEmpty() || !newPhotos.isEmpty()) {
 
                     // TODO : лог для Марата = проверка работы обхода, остальное внутри блока комментишь
-/*                  log.info("===========================================================");
+                    log.info("===========================================================");
                     log.info("Директория: " + directory);
                     log.info("Старые фото: " + Arrays.toString(oldPhotos.toArray()));
                     log.info("Новые фото: " + Arrays.toString(newPhotos.toArray()));
-                    log.info("===========================================================");*/
+                    log.info("===========================================================");
 
-                    // TODO : лог для Марата = заглушка для одного адреса + поменяй руты
+                    /*// TODO : лог для Марата = заглушка для одного адреса + поменяй руты
                     // Отправляем на распознавание
                     //var response = send(oldPhotos, newPhotos);
                     var response = new RecognitionResponse("10028323", "10964490", "");
@@ -126,12 +126,14 @@ public class PhotoFolderScanner {
                         if (isConfirmed) {
                             // Если брака CV нет, записываем фотографии в хранилище MinIO/БД
                             log.info("СV верно отработал!!!");
+
+                            saveData(ROOT, address, response, oldPhotos, newPhotos);
                         } else {
                             throw new Exception(REJECTION_PHOTO_ERROR_MSG);
                         }
                     } else {
                         throw new Exception(format(RECOGNITION_PHOTO_ERROR_MSG, error));
-                    }
+                    }*/
                 } else {
                     throw new Exception(MISSING_PHOTO_ERROR_MSG);
                 }
@@ -208,7 +210,8 @@ public class PhotoFolderScanner {
                 var uniqueName = addressName + "_" + response.oldNumber() + "_V" + count;
 
                 minioService.uploadFile(uniqueName, bytes);
-                meteringDevice.getRenaimingOldPhotos();
+                var renaimingOldPhotos = meteringDevice.getRenaimingOldPhotos();
+                meteringDevice.setRenaimingOldPhotos(renaimingOldPhotos + ", " + uniqueName);
 
                 count++;
             }
@@ -220,7 +223,8 @@ public class PhotoFolderScanner {
                 var uniqueName = addressName + "_" + response.newNumber() + "_V" + count;
 
                 minioService.uploadFile(uniqueName, bytes);
-                meteringDevice.getRenaimingNewPhotos();
+                var renaimingNewPhotos = meteringDevice.getRenaimingNewPhotos();
+                meteringDevice.setRenaimingNewPhotos(renaimingNewPhotos + ", " + uniqueName);
 
                 count++;
             }
